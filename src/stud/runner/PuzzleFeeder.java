@@ -7,8 +7,11 @@ import core.solver.algorithm.heuristic.Predictor;
 import core.solver.queue.EvaluationType;
 import core.solver.queue.Frontier;
 import core.problem.*;
+import core.solver.queue.Node;
 import stud.problem.npuzzle.Position;
 import stud.problem.npuzzle.PuzzleFinding;
+import stud.problem.npuzzle.distance.*;
+import stud.queue.ListFrontier;
 
 import java.util.ArrayList;
 
@@ -19,7 +22,6 @@ public class PuzzleFeeder extends EngineFeeder {
         for (String line : problemLines) {
 
             // 生成初始状态
-            Position initState = new Position();
             // line： 3 5 0 8 4 2 1 7 3 6 1 2 3 4 5 6 7 8 0
             // 第一个数字3表示3*3的矩阵，5 0 8 4 2 1 7 3 6 表示矩阵初始状态，1 2 3 4 5 6 7 8 0表示矩阵的目标状态
             String[] parts = line.split(" ");
@@ -31,19 +33,16 @@ public class PuzzleFeeder extends EngineFeeder {
                     state[i][j] = Integer.parseInt(parts[index++]);
                 }
             }
-            initState.setState(state);
-            initState.setSize(size);
+            Position initState = new Position(state);
 
             // 生成目标状态
-            Position goal = new Position();
             int[][] goalState = new int[size][size];
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     goalState[i][j] = Integer.parseInt(parts[index++]);
                 }
             }
-            goal.setState(goalState);
-            goal.setSize(size);
+            Position goal = new Position(goalState);
             PuzzleFinding problem = new PuzzleFinding(initState, goal);
             problems.add(problem);
         }
@@ -52,13 +51,13 @@ public class PuzzleFeeder extends EngineFeeder {
 
     @Override
     public Frontier getFrontier(EvaluationType type) {
-        System.out.println("PuzzleFeeder.getFrontier"+ type);
-        return null;
+        return new ListFrontier(Node.evaluator(type));
     }
 
     @Override
     public Predictor getPredictor(HeuristicType type) {
-//        System.out.println("PuzzleFeeder.getPredictor"+ type);
+        if(type == HeuristicType.MANHATTAN) return new Manhattan();
+        if(type == HeuristicType.MISPLACED) return new Misplaced();
         return null;
     }
 }

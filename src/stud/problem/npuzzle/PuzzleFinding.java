@@ -14,7 +14,7 @@ public class PuzzleFinding extends Problem {
 
     @Override
     public boolean solvable() {
-        return false;
+        return true;
     }
 
     @Override
