@@ -3,6 +3,7 @@ package core.solver.algorithm.searcher;
 import java.util.*;
 
 import core.problem.Problem;
+import core.problem.State;
 import core.solver.algorithm.heuristic.Predictor;
 import core.solver.algorithm.searcher.AbstractSearcher;
 import core.solver.queue.Frontier;
@@ -67,6 +68,13 @@ public final class BestFirstSearcher extends AbstractSearcher {
 					frontier.offer(child);
 				// 如果已经扩展过，就舍弃掉。
 			}
+			// print all the explored nodes
+//			System.out.println("Explored: ");
+//			for(State n : explored) {
+//				n.draw();
+//			}
+//			System.out.println("-----------------");
+
 			nodesExpanded++;
 		}
 	}

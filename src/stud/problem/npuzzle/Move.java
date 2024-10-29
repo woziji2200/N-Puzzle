@@ -11,7 +11,6 @@ public class Move extends Action {
 
     @Override
     public void draw() {
-//        System.out.print();
         System.out.println("   ¡ý");
         System.out.println("   ¡ý-(#, " + direction + ")");
         System.out.println("   ¡ý");

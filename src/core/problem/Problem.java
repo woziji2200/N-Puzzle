@@ -117,6 +117,7 @@ public abstract class Problem {
      * @return  true：要判断的状态已经是目标状态；否则，false
      */
     public boolean goal(State state){
+//        System.out.println("Problem goal");
         return state.equals(goal);
     }
 

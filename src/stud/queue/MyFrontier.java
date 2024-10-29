@@ -8,12 +8,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-/**
- * Description:
- *
- * @date:2022/10/12 9:41
- * @author:Karthus77
- */
 public class MyFrontier extends PriorityQueue<Node> implements Frontier {
     //1. 比较器
     private final Comparator<Node> evaluator;
@@ -41,13 +35,10 @@ public class MyFrontier extends PriorityQueue<Node> implements Frontier {
     @Override
     public boolean offer(Node node) {
         Node oldNode = getNode(node.getState());
-        if (oldNode == null) {
-            super.offer(node);
-            hashMap.put((node.getState()).hashCode(), node);
-            return true;
-        } else { //child已经在Frontier中
-            return discardOrReplace(oldNode, node);
-        }
+        if (oldNode != null) { return discardOrReplace(oldNode, node); }
+        super.offer(node);
+        hashMap.put((node.getState()).hashCode(), node);
+        return true;
     }
 
     //4. 如果已经在Frontier中，则判断新生成的节点是否应该替换
@@ -63,7 +54,7 @@ public class MyFrontier extends PriorityQueue<Node> implements Frontier {
             replace(oldNode, node);
             return true;
         }
-        return false;   //discard，扔掉新结点
+        return false;
     }
 
 }

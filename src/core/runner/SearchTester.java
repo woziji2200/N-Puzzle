@@ -54,7 +54,7 @@ public final class SearchTester {
         for (HeuristicType heuristicType : heuristics) { 
             //solveProblems方法根据不同启发函数生成不同的searcher
             //从Feeder获取所使用的搜索引擎（AStar，IDAStar等），     
-            solveProblems(problems, feeder.getAStar(heuristicType), heuristicType);
+            solveProblems(problems, feeder.getIdaStar(heuristicType), heuristicType);
             System.out.println();
         }
     }
@@ -76,8 +76,9 @@ public final class SearchTester {
         else {
             //NPuzzle问题的第一阶段，使用不在位将牌和曼哈顿距离
             if (step == 1) {
-                heuristics.add(MISPLACED);
                 heuristics.add(MANHATTAN);
+//                heuristics.add(MISPLACED);
+
             }
             //NPuzzle问题的第三阶段，使用Disjoint Pattern
             else if (step == 3){

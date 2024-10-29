@@ -6,14 +6,29 @@ import core.problem.State;
 import java.util.Collection;
 import java.util.Random;
 
+
+/**
+ * 我们认为Position创建以后，棋盘的state就不会再改变了。所以hashCode和zeroPosition只需要计算一次
+ */
 public class Position extends State {
     private int[][] state;  // 当前棋盘矩阵的状态
-    private int[] zeroPosition = new int[2]; // 空格的位置
+    private int[] zeroPosition = {-1, -1}; // 空格的位置
     private int size;
     public int[][] getState() {
         return state;
     }
     public int[] getZeroPosition() {
+        if(zeroPosition[0] != -1 && zeroPosition[1] != -1) {
+            return zeroPosition;
+        }
+        for (int i = 0; i < getSize(); i++) {
+            for (int j = 0; j < getSize(); j++) {
+                if (state[i][j] == 0) {
+                    this.zeroPosition[0] = i;
+                    this.zeroPosition[1] = j;
+                }
+            }
+        }
         return zeroPosition;
     }
     public int getSize() {
@@ -39,14 +54,17 @@ public class Position extends State {
         }
         this.state = state;
         this.size = state.length;
-        for (int i = 0; i < getSize(); i++) {
-            for (int j = 0; j < getSize(); j++) {
-                if (state[i][j] == 0) {
-                    this.zeroPosition[0] = i;
-                    this.zeroPosition[1] = j;
-                }
-            }
+    }
+
+    public Position(int[][] state, int[] zeroPosition2) {
+        if (!hasZobristTable) {
+            generateZobristTable();
+            System.out.println("生成ZobristTable");
+            hasZobristTable = true;
         }
+        this.state = state;
+        this.size = state.length;
+        this.zeroPosition = zeroPosition2;
     }
 
 
@@ -76,45 +94,46 @@ public class Position extends State {
 //            this.draw();
 //            System.out.println("移动方向：" + move.direction);
             int size = getSize();
-            int x = zeroPosition[0];
-            int y = zeroPosition[1];
+            int x = getZeroPosition()[0];
+            int y = getZeroPosition()[1];
+            int[] zeroPosition2 = {x, y};
             switch (move.direction) {
                 case UP:
                     if (x > 0) {
                         nextStateArray[x][y] = nextStateArray[x - 1][y];
                         nextStateArray[x - 1][y] = 0;
-//                        nextState.zeroPosition[0] = x - 1;
+                        zeroPosition2[0] = x - 1;
                     }
                     break;
                 case DOWN:
                     if (x < size - 1) {
                         nextStateArray[x][y] = nextStateArray[x + 1][y];
                         nextStateArray[x + 1][y] = 0;
-//                        nextState.zeroPosition[0] = x + 1;
+                        zeroPosition2[0] = x + 1;
                     }
                     break;
                 case LEFT:
                     if (y > 0) {
                         nextStateArray[x][y] = nextStateArray[x][y - 1];
                         nextStateArray[x][y - 1] = 0;
-//                        nextState.zeroPosition[1] = y - 1;
+                        zeroPosition2[1] = y - 1;
                     }
                     break;
                 case RIGHT:
                     if (y < size - 1) {
                         nextStateArray[x][y] = nextStateArray[x][y + 1];
                         nextStateArray[x][y + 1] = 0;
-//                        nextState.zeroPosition[1] = y + 1;
+                        zeroPosition2[1] = y + 1;
                     }
                     break;
                 default:
                     break;
             }
+            Position nextState = new Position(nextStateArray, zeroPosition2);
+            return nextState;
         }
-        Position nextState = new Position(nextStateArray);
-//        System.out.println("移动后状态：");
-//        nextState.draw();
-        return nextState;
+        return null;
+
     }
 
     @Override
@@ -127,37 +146,16 @@ public class Position extends State {
         return actions;
     }
 
-    public int parity() {//Position中的方法
-        // 根据Puzzle奇偶阶数分类讨论
-        int size = this.getSize();
-        int inv=(size%2==0)?zeroPosition[0]:0;
-        for(int i=0;i<size;++i) {
-            for(int j=0;j<size;++j) {
-                //遍历state[i][j]之后的数，找到比state[i][j]小的数
-                for(int ti=i,tj=j+1;ti<size;++ti) {
-                    for(;tj<size;++tj) {
-                        if(this.state[ti][tj]<this.state[i][j]
-                                &&this.state[ti][tj]!=0&&this.state[i][j]!=0) {
-                            ++inv;
-                        }
-                    }
-                    tj=0;
-                }
-            }
-        }
-        return inv%2;
-    }
-
     @Override
     public int hashCode() {
-        int result = 1;
-        for (int[] row : state) {
-            for (int pos : row) {
-                result = 31 * result + pos;
-            }
-        }
-        return result;
-//        return getZHashCode();
+//        int result = 1;
+//        for (int[] row : state) {
+//            for (int pos : row) {
+//                result = 31 * result + pos;
+//            }
+//        }
+//        return result;
+        return getZHashCode();
     }
 
     private int zHashCode = 0;
@@ -173,9 +171,6 @@ public class Position extends State {
                 }
             }
             zHashCode = hash;
-//            if(zHashCode == 0) {
-//                System.out.println("zHashCode = 0");
-//            }
         }
         return zHashCode;
     }
