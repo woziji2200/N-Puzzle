@@ -12,57 +12,61 @@ public class PuzzleFinding extends Problem {
         super(initialState, goal);
     }
 
+    public State getGoal() {
+        return goal;
+    }
+
     @Override
     public boolean solvable() {
-        return ((Position)initialState).parity() == ((Position)goal).parity();
-//        // 将初始状态转换为 Position 类型，这个类包含了拼图的当前布局
-//        Position puzzleState = (Position) initialState;
-//        // 获取拼图的大小，即 N×N 网格中的 N
-//        int boardSize = puzzleState.state.length;
-//        // 获取当前拼图的布局
-//        int[][] boardLayout = puzzleState.state;
-//        // 初始化逆序数计数器
-//        int inversionCount = 0;
-//        // 创建一个一维数组 flatLayout 来存储拼图的布局，以便进行逆序数的计算
-//        int[] flatLayout = new int[boardSize * boardSize];
-//        // 将拼图布局复制到 flatLayout 数组中
-//        int index = 0;
-//        for (int i = 0; i < boardSize; i++) {
-//            for (int j = 0; j < boardSize; j++) {
-//                flatLayout[index++] = boardLayout[i][j];
-//            }
-//        }
-//        // 重置 index 为 0，用于计算逆序数
-//        index = 0;
-//        // 遍历 flatLayout 数组，计算逆序数
-//        for (int i = 0; i < boardSize * boardSize; i++) {
-//            for (int j = i + 1; j < boardSize * boardSize; j++) {
-//                // 如果 flatLayout[j] 小于 flatLayout[i] 且 flatLayout[j] 不为 0，则增加逆序数计数器
-//                if (flatLayout[j] < flatLayout[i] && flatLayout[j] != 0) {
-//                    inversionCount++;
-//                }
-//            }
-//        }
-//        // 获取空格的位置
-//        int[] blankPosition = puzzleState.zeroPosition;
-//        // 获取空格的行号
-//        int blankRow = blankPosition[0];
-//        // 如果拼图的大小是奇数
-//        if (boardSize % 2 == 1) {
-//            // 如果逆序数是偶数，则拼图有解
-//            return inversionCount % 2 == 0;
-//        }
-//        // 如果拼图的大小是偶数
-//        else {
-//            // 如果逆序数的奇偶性和空格的行号的奇偶性不同，则拼图有解
-//            return (inversionCount % 2 == 0 && blankRow % 2 == 1) ||
-//                    (inversionCount % 2 == 1 && blankRow % 2 == 0);
-//        }
+//        return ((Position)initialState).parity() == ((Position)goal).parity();
+        // 将初始状态转换为 Position 类型，这个类包含了拼图的当前布局
+        Position puzzleState = (Position) initialState;
+        // 获取拼图的大小，即 N×N 网格中的 N
+        int boardSize = puzzleState.getSize();
+        // 获取当前拼图的布局
+        int[][] boardLayout = puzzleState.getState();
+        // 初始化逆序数计数器
+        int inversionCount = 0;
+        // 创建一个一维数组 flatLayout 来存储拼图的布局，以便进行逆序数的计算
+        int[] flatLayout = new int[boardSize * boardSize];
+        // 将拼图布局复制到 flatLayout 数组中
+        int index = 0;
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                flatLayout[index++] = boardLayout[i][j];
+            }
+        }
+        // 重置 index 为 0，用于计算逆序数
+        index = 0;
+        // 遍历 flatLayout 数组，计算逆序数
+        for (int i = 0; i < boardSize * boardSize; i++) {
+            for (int j = i + 1; j < boardSize * boardSize; j++) {
+                // 如果 flatLayout[j] 小于 flatLayout[i] 且 flatLayout[j] 不为 0，则增加逆序数计数器
+                if (flatLayout[j] < flatLayout[i] && flatLayout[j] != 0) {
+                    inversionCount++;
+                }
+            }
+        }
+        // 获取空格的位置
+        int[] blankPosition = puzzleState.getZeroPosition();
+        // 获取空格的行号
+        int blankRow = blankPosition[0];
+        // 如果拼图的大小是奇数
+        if (boardSize % 2 == 1) {
+            // 如果逆序数是偶数，则拼图有解
+            return inversionCount % 2 == 0;
+        }
+        // 如果拼图的大小是偶数
+        else {
+            // 如果逆序数的奇偶性和空格的行号的奇偶性不同，则拼图有解
+            return (inversionCount % 2 == 0 && blankRow % 2 == 1) ||
+                    (inversionCount % 2 == 1 && blankRow % 2 == 0);
+        }
     }
 
     @Override
     public int stepCost(State state, Action action) {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -70,7 +74,7 @@ public class PuzzleFinding extends Problem {
         // 将当前状态转换为 Position 类型，这个类包含了拼图的当前布局
         Position puzzleState = (Position) state;
         // 获取拼图的大小，即 N×N 网格中的 N
-        int boardSize = puzzleState.getState().length;
+        int boardSize = puzzleState.getSize();
         // 获取当前拼图的布局
         int[][] boardLayout = puzzleState.getState();
         // 获取空格的位置

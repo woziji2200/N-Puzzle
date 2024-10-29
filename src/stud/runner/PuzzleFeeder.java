@@ -13,6 +13,8 @@ import stud.problem.npuzzle.PuzzleFinding;
 import stud.problem.npuzzle.distance.*;
 import stud.queue.ListFrontier;
 import stud.queue.MyFrontier;
+import stud.queue.QueueFrontier;
+import stud.queue.StackFrontier;
 
 import java.util.ArrayList;
 
@@ -52,15 +54,17 @@ public class PuzzleFeeder extends EngineFeeder {
 
     @Override
     public Frontier getFrontier(EvaluationType type) {
-        return new ListFrontier(Node.evaluator(type));
+//        return new ListFrontier(Node.evaluator(type));
 //        return new MyFrontier(Node.evaluator(type));
+//        System.out.println("type = " + type);
+        return new MyFrontier(Node.evaluator(type));
     }
 
     @Override
     public Predictor getPredictor(HeuristicType type) {
         System.out.println("type = " + type);
         if(type == HeuristicType.MANHATTAN) return new Manhattan();
-        if(type == HeuristicType.MISPLACED) return new Manhattan();
+        if(type == HeuristicType.MISPLACED) return new Misplaced();
         return null;
     }
 }

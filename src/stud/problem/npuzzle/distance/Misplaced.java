@@ -22,7 +22,12 @@ public class Misplaced implements Predictor {
                 }
             }
         }
-        System.out.println("misplacedTiles = " + misplacedTiles);
+//        System.out.println("misplacedTiles = " + misplacedTiles);
+//        try {
+//            Thread.sleep(10);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return misplacedTiles;
     }
 }

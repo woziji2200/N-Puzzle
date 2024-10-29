@@ -29,7 +29,7 @@ public class Manhattan implements Predictor {
                 }
             }
         }
-        System.out.println("manhattanDistance = " + manhattanDistance);
         return manhattanDistance;
+
     }
 }
