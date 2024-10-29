@@ -7,8 +7,8 @@ import stud.problem.npuzzle.Position;
 public class Manhattan implements Predictor {
     @Override
     public int heuristics(State state, State goal) {
-        int [][]stateArray = ((Position) state).state;
-        int [][]goalArray = ((Position) goal).state;
+        int [][]stateArray = ((Position) state).getState();
+        int [][]goalArray = ((Position) goal).getState();
         int size = stateArray.length;
         int manhattanDistance = 0;
 
@@ -29,7 +29,7 @@ public class Manhattan implements Predictor {
                 }
             }
         }
-
+        System.out.println("manhattanDistance = " + manhattanDistance);
         return manhattanDistance;
     }
 }

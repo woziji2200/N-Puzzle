@@ -80,9 +80,11 @@ public class ListFrontier extends ArrayList<Node> implements Frontier {
     private Node getNode(State state) {
         for (var node : this){
             if (node.getState().equals(state)){
+//                System.out.print("= ");
                 return node;
             }
         }
+//        System.out.print("!= ");
         return null;
     }
 

@@ -8,8 +8,8 @@ public class Disjoint_pattern implements Predictor {
 
     @Override
     public int heuristics(State state, State goal) {
-        int [][]stateArray = ((Position) state).state;
-        int [][]goalArray = ((Position) goal).state;
+        int [][]stateArray = ((Position) state).getState();
+        int [][]goalArray = ((Position) goal).getState();
 
         return 0;
     }

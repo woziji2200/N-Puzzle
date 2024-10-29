@@ -7,8 +7,8 @@ import stud.problem.npuzzle.Position;
 public class Misplaced implements Predictor {
     @Override
     public int heuristics(State state, State goal) {
-        int [][]stateArray = ((Position) state).state;
-        int [][]goalArray = ((Position) goal).state;
+        int [][]stateArray = ((Position) state).getState();
+        int [][]goalArray = ((Position) goal).getState();
 
         int size = stateArray.length;
         int misplacedTiles = 0;
@@ -22,7 +22,7 @@ public class Misplaced implements Predictor {
                 }
             }
         }
-
+        System.out.println("misplacedTiles = " + misplacedTiles);
         return misplacedTiles;
     }
 }
