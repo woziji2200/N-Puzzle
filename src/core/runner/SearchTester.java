@@ -7,8 +7,7 @@ import core.solver.algorithm.searcher.AbstractSearcher;
 import core.solver.queue.Node;
 import core.solver.algorithm.heuristic.HeuristicType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -28,6 +27,13 @@ public final class SearchTester {
     public static void main(String[] args) throws ClassNotFoundException,
             NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException, FileNotFoundException {
+
+//        try{
+//            PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("print.txt")), true);
+//            System.setOut(ps);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         //根据args[3]提供的类名生成学生的EngineFeeder对象
         EngineFeeder feeder = (EngineFeeder)

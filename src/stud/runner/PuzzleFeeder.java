@@ -65,6 +65,7 @@ public class PuzzleFeeder extends EngineFeeder {
         System.out.println("type = " + type);
         if(type == HeuristicType.MANHATTAN) return new Manhattan();
         if(type == HeuristicType.MISPLACED) return new Misplaced();
+        if (type == HeuristicType.DISJOINT_PATTERN) return new Disjoint_pattern();
         return null;
     }
 }

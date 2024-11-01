@@ -5,6 +5,9 @@ import core.problem.Problem;
 import core.problem.State;
 import core.solver.queue.Node;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Deque;
 
 public class PuzzleFinding extends Problem {
@@ -113,6 +116,7 @@ public class PuzzleFinding extends Problem {
             System.out.println("No Solution.");
             return;
         }
+        System.out.println("=======");
         initialState.draw();
         for (Node node : path) {
             Move move = (Move) (node.getAction());
@@ -120,6 +124,6 @@ public class PuzzleFinding extends Problem {
             Position position = (Position) (node.getState());
             position.draw();
         }
-        System.out.println();
+        System.out.println("=======");
     }
 }

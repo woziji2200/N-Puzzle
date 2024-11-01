@@ -48,14 +48,12 @@ public class IdAStar extends AbstractSearcher {
         while (cutoff < maxIteratorDepth) {
             openStack.push(root);
             newCutoff = cutoff;
+//            System.out.println(newCutoff);
             //当栈未空时继续，执行带裁剪值的深度优先搜索
             expanded = 0;
             while (!openStack.empty()) {
                 expanded++;
                 Node node = openStack.pop();
-//                System.out.println("cost="+node.evaluation()+" pathCost="+node.getPathCost());
-//                node.getState().draw();
-
                 //更新裁剪值为未被探索节点中最小的评估值
                 if (problem.goal(node.getState())) {
 //                    System.out.println("cutoff="+cutoff+" expanded="+expanded);
@@ -66,9 +64,7 @@ public class IdAStar extends AbstractSearcher {
                     //剪枝，防止节点探索回到父节点
                     if (child.evaluation() <= cutoff) {
                         if (node.getParent() == null || !node.getParent().equals(child)) {
-
                             openStack.push(child);
-
                         }
                     } else {
                         //记录大于当前cutoff的最小值
@@ -79,10 +75,6 @@ public class IdAStar extends AbstractSearcher {
             }
             //更新裁剪值
             cutoff = newCutoff;
-            //System.out.println("cutoff="+cutoff+" expanded="+expanded);
-            //closeStack.clear();
-            //System.out.println("cutoff: " + cutoff);
-            //System.out.println("expanded node: " +  expanded);
         }
         return null;
     }
