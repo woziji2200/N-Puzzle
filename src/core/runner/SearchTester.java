@@ -105,7 +105,7 @@ public final class SearchTester {
             // 使用AStar引擎求解问题
             StopwatchCPU timer1 = new StopwatchCPU();
             Deque<Node> path = searcher.search(problem);
-            double time1 = timer1.elapsedTime();
+            long time1 = timer1.elapsedTime();
 
             if (path == null) {
                 System.out.println("No Solution" + "，执行了" + time1 + "s，"+

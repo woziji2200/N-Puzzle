@@ -48,9 +48,9 @@ public class StopwatchCPU {
      *
      * @return elapsed CPU time (in seconds) since the stopwatch was created
      */
-    public double elapsedTime() {
+    public long elapsedTime() {
         long now = threadTimer.getCurrentThreadCpuTime();
-        return (now - start) / NANOSECONDS_PER_SECOND;
+        return (now - start);
     }
 
     /**
