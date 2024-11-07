@@ -113,6 +113,9 @@ public final class SearchTester {
             StopwatchCPU timer1 = new StopwatchCPU();
             Deque<Node> path = searcher.search(problem);
             long time1 = timer1.elapsedTime();
+            
+            // 获取Java运行时环境
+            Runtime runtime = Runtime.getRuntime();
             // 获取程序运行前的内存使用情况
             long beforeUsedMem = runtime.totalMemory() - runtime.freeMemory();
             
