@@ -27,7 +27,14 @@ public final class SearchTester {
     public static void main(String[] args) throws ClassNotFoundException,
             NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException, FileNotFoundException {
-
+        
+        // 创建文件
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"))) {
+            writer.write("实验数据：");
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //        try{
 //            PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("print.txt")), true);
 //            System.setOut(ps);
@@ -129,6 +136,19 @@ public final class SearchTester {
             long actualMemUsed = afterUsedMem - beforeUsedMem;
             System.out.println("程序运行前内存使用量（字节）: " + beforeUsedMem +"，程序运行后内存使用量（字节）: " +
                     afterUsedMem + "，程序运行内存使用增量（字节）: " + actualMemUsed);
+
+            // 输出到文件中
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt", true))) {
+                writer.write("启发函数：" + heuristicType + "，解路径长度：" + path.size() + "，执行了" + time1 + "s，" +
+                        "共生成了" + searcher.nodesGenerated() + "个结点，" +
+                        "扩展了" + searcher.nodesExpanded() + "个结点");
+                writer.newLine();
+                writer.write("程序运行前内存使用量（字节）: " + beforeUsedMem +"，程序运行后内存使用量（字节）: " +
+                        afterUsedMem + "，程序运行内存使用增量（字节）: " + actualMemUsed);
+                writer.newLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
