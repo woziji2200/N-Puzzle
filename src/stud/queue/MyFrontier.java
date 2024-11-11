@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 public class MyFrontier extends PriorityQueue<Node> implements Frontier {
-    //1. 比较器
+
     private final Comparator<Node> evaluator;
     private final HashMap<Integer, Node> hashMap = new HashMap<>();
 
@@ -41,16 +41,13 @@ public class MyFrontier extends PriorityQueue<Node> implements Frontier {
         return true;
     }
 
-    //4. 如果已经在Frontier中，则判断新生成的节点是否应该替换
     private void replace(Node oldNode, Node newNode) {
         hashMap.put((oldNode.getState()).hashCode(),newNode);
         super.offer(newNode);
     }
 
     private boolean discardOrReplace(Node oldNode, Node node) {
-        // 如果旧结点的估值比新的大，即新生成的结点更好
         if (evaluator.compare(oldNode, node) > 0) {
-            // 用新节点替换旧节点
             replace(oldNode, node);
             return true;
         }

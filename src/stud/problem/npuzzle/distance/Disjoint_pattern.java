@@ -25,9 +25,6 @@ public class Disjoint_pattern implements Predictor {
             pattern3 =  Database.getDatabase(new Position(new int[][]{{16, 16, 16, 16}, {16, 16, 7, 8}, {16, 16, 11, 12}, {16, 14, 15, 0}}),"3.db");
             System.out.println("pattern3 success");
 
-//        pattern1 =  Database.getDatabase(new Position(new int[][]{{1, 2, 3, 4}, {5, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),"1.db");
-//        pattern2 =  Database.getDatabase(new Position(new int[][]{{0, 0, 0, 0}, {0, 6, 7, 8}, {9, 10, 0, 0}, {0, 0, 0, 0}}),"2.db");
-//        pattern3 =  Database.getDatabase(new Position(new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 11, 12}, {13, 14, 15, 0}}),"3.db");
         System.out.println("Loading database success");
     }
 
@@ -35,6 +32,10 @@ public class Disjoint_pattern implements Predictor {
     public int heuristics(State state, State goal) {
         int[][] stateArray = ((Position) state).getState();
         int[][][] states = new int[3][4][4];
+        int disjHash1 = 0;
+        int disjHash2 = 0;
+        int disjHash3 = 0;
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 int num = stateArray[i][j];
@@ -71,24 +72,28 @@ public class Disjoint_pattern implements Predictor {
                     states[0][i][j] = num;
                     states[1][i][j] = 16;
                     states[2][i][j] = 16;
+                    // 直接生成hash值，不用再调用Position的hashCode方法了
+                    disjHash1 ^= Position.zobristTable[num][(i) * 4 + j];
                 }
 //                // 1 5 6 9 10 13
                 else if (num == 1 || num == 5 || num == 6 || num == 9 || num == 10 || num == 13) {
                     states[1][i][j] = num;
                     states[0][i][j] = 16;
                     states[2][i][j] = 16;
+                    disjHash2 ^= Position.zobristTable[num][(i) * 4 + j];
                 }
 //                // 7 8 11 12 14 15
                 else if (num == 7 || num == 8 || num == 11 || num == 12 || num == 14 || num == 15) {
                     states[2][i][j] = num;
                     states[0][i][j] = 16;
                     states[1][i][j] = 16;
+                    disjHash3 ^= Position.zobristTable[num][(i) * 4 + j];
                 }
             }
         }
-        Position state1Position = new Position(states[0], true);
-        Position state2Position = new Position(states[1], true);
-        Position state3Position = new Position(states[2], true);
+        Position state1Position = new Position(states[0], true, disjHash1);
+        Position state2Position = new Position(states[1], true, disjHash2);
+        Position state3Position = new Position(states[2], true, disjHash3);
         int distance1 , distance2 , distance3;
         try {
              distance1 = pattern1.get(state1Position.getDisjointPatternHashCode());
@@ -98,19 +103,6 @@ public class Disjoint_pattern implements Predictor {
             state3Position.draw();
             throw new RuntimeException(e);
         }
-
-//        System.out.println("distance1 = " + distance1);
-//        System.out.println("distance2 = " + distance2);
-//        System.out.println("distance3 = " + distance3);
-//        System.out.println("distance1 + distance2 + distance3 = " + (distance1 + distance2 + distance3));
-//        try {
-//            Thread.sleep(20);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("distance1 + distance2 + distance3 = " + (distance1 + distance2 + distance3));
-//        int sum = distance1 + distance2 + distance3;
-//        if(sum == 1 ||  sum == 2) return sum;
         return (int) ((distance1 + distance2 + distance3));
     }
 }

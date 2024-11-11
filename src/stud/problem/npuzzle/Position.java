@@ -21,6 +21,7 @@ public class Position extends State {
         if(zeroPosition[0] != -1 && zeroPosition[1] != -1) {
             return zeroPosition;
         }
+        // 只有此前没有计算过zeroPosition时才计算
         for (int i = 0; i < getSize(); i++) {
             for (int j = 0; j < getSize(); j++) {
                 if (state[i][j] == 0) {
@@ -35,8 +36,8 @@ public class Position extends State {
         return size;
     }
 
-    private static int[][] zobristTable; // Random hash values
-    private static boolean hasZobristTable = false;
+    public static int[][] zobristTable; // Random hash values
+    public static boolean hasZobristTable = false;
     private static void generateZobristTable() {
 //        Random random = new Random();
 //        zobristTable = new int[20][20];
@@ -78,6 +79,11 @@ public class Position extends State {
                 {1935157304,-46792059,-2043932525,-298370032,-967309036,921577486,-1739368742,-215894497,-133794937,-538855599,-1673589338,-1931736511,992220614,-827234284,831405433,-1538599890,-1897532008,2125321224,-1575257219,-1367242339}
         };
     }
+
+    /**
+     * 生成一个状态
+     * @param state 棋盘状态
+     */
     public Position(int[][] state) {
         if (!hasZobristTable) {
             generateZobristTable();
@@ -88,6 +94,11 @@ public class Position extends State {
         this.size = state.length;
     }
 
+    /**
+     * 生成一个状态，同时指定空格的位置，减少计算空格位置的时间
+     * @param state
+     * @param zeroPosition2
+     */
     public Position(int[][] state, int[] zeroPosition2) {
         if (!hasZobristTable) {
             generateZobristTable();
@@ -99,7 +110,13 @@ public class Position extends State {
         this.zeroPosition = zeroPosition2;
     }
 
-    public Position(int[][ ]state, boolean noZeroPosition){
+    /**
+     * 生成一个状态，并且不需要计算空格的位置；同时指定不相交模式的哈希值
+     * @param state
+     * @param noZeroPosition
+     * @param _disjointPatternHashCode
+     */
+    public Position(int[][ ]state, boolean noZeroPosition, int _disjointPatternHashCode) {
         if (!hasZobristTable) {
             generateZobristTable();
 //            System.out.println("生成ZobristTable");
@@ -107,7 +124,25 @@ public class Position extends State {
         }
         this.state = state;
         this.size = state.length;
+        this.disjointPatternHashCode = _disjointPatternHashCode;
     }
+
+    /**
+     * 生成一个状态，并且不需要计算空格的位置；同时指定哈希值
+     * @param state
+     * @param zeroPosition
+     * @param _hashCode
+     */
+    public Position(int[][] state, int[] zeroPosition, int _hashCode) {
+        if (!hasZobristTable) {
+            generateZobristTable();
+        }
+        this.state = state;
+        this.size = state.length;
+        this.zeroPosition = zeroPosition;
+        this.zHashCode = _hashCode;
+    }
+
 
 
     @Override
@@ -124,6 +159,7 @@ public class Position extends State {
 
     @Override
     public State next(Action action) {
+        // 复制当前状态
         int[][] nextStateArray = new int[getSize()][getSize()];
         for (int i = 0; i < getSize(); i++) {
             for (int j = 0; j < getSize(); j++) {
@@ -133,46 +169,54 @@ public class Position extends State {
 
         if (action instanceof Move) {
             Move move = (Move) action;
-//            System.out.println("原始状态：");
-//            this.draw();
-//            System.out.println("移动方向：" + move.direction);
+
             int size = getSize();
-            int x = getZeroPosition()[0];
-            int y = getZeroPosition()[1];
+            int x = getZeroPosition()[0];   // 当前空格的x位置
+            int y = getZeroPosition()[1];   // 当前空格的y位置
             int[] zeroPosition2 = {x, y};
+            int nextHashCode = getZHashCode();  // 下一个状态的哈希值
             switch (move.direction) {
                 case UP:
                     if (x > 0) {
+                        // 我们直接根据当前状态的哈希值计算下一个状态的哈希值，大幅减少了计算时间
+                        nextHashCode ^= zobristTable[nextStateArray[x - 1][y]][(x - 1) * size + y];
                         nextStateArray[x][y] = nextStateArray[x - 1][y];
                         nextStateArray[x - 1][y] = 0;
                         zeroPosition2[0] = x - 1;
+                        nextHashCode ^= zobristTable[nextStateArray[x][y]][(x) * size + y];
                     }
                     break;
                 case DOWN:
                     if (x < size - 1) {
+                        nextHashCode ^= zobristTable[nextStateArray[x + 1][y]][(x + 1) * size + y];
                         nextStateArray[x][y] = nextStateArray[x + 1][y];
                         nextStateArray[x + 1][y] = 0;
                         zeroPosition2[0] = x + 1;
+                        nextHashCode ^= zobristTable[nextStateArray[x][y]][(x) * size + y];
                     }
                     break;
                 case LEFT:
                     if (y > 0) {
+                        nextHashCode ^= zobristTable[nextStateArray[x][y - 1]][(x) * size + y - 1];
                         nextStateArray[x][y] = nextStateArray[x][y - 1];
                         nextStateArray[x][y - 1] = 0;
                         zeroPosition2[1] = y - 1;
+                        nextHashCode ^= zobristTable[nextStateArray[x][y]][x * size + y];
                     }
                     break;
                 case RIGHT:
                     if (y < size - 1) {
+                        nextHashCode ^= zobristTable[nextStateArray[x][y + 1]][(x) * size + y + 1];
                         nextStateArray[x][y] = nextStateArray[x][y + 1];
                         nextStateArray[x][y + 1] = 0;
                         zeroPosition2[1] = y + 1;
+                        nextHashCode ^= zobristTable[nextStateArray[x][y]][x * size + y];
                     }
                     break;
                 default:
                     break;
             }
-            Position nextState = new Position(nextStateArray, zeroPosition2);
+            Position nextState = new Position(nextStateArray, zeroPosition2, nextHashCode);
             return nextState;
         }
         return null;
@@ -191,36 +235,31 @@ public class Position extends State {
 
     @Override
     public int hashCode() {
-//        int result = 1;
-//        for (int[] row : state) {
-//            for (int pos : row) {
-//                result = 31 * result + pos;
-//            }
-//        }
-//        return result;
         return getZHashCode();
     }
 
     private int zHashCode = 0;
+    // 计算Zobrist哈希值
     public int getZHashCode() {
         if(zHashCode == 0) {
             int hash = 0;
+            int disjHash = 0;
             for (int i = 0; i < getSize(); i++) {
                 for (int j = 0; j < getSize(); j++) {
                     int piece = state[i][j];
                     if (piece != 0) { // 0表示空格
-//                        System.out.println("piece = " + piece);
-//                        System.out.println(zobristTable.length);
                         hash ^= (zobristTable[piece][i * getSize() + j]);
                     }
                 }
             }
             zHashCode = hash;
+
         }
         return zHashCode;
     }
 
     private int disjointPatternHashCode = 0;
+    // 计算不相交模式的哈希值，忽略了16和0
     public int getDisjointPatternHashCode() {
         if(disjointPatternHashCode == 0) {
             int hash = 0;
@@ -245,29 +284,8 @@ public class Position extends State {
             if(getSize() != other.getSize() || getSize() != other.getSize()) {
                 return false;
             }
-//            System.out.println("zHashCode = " + getZHashCode());
-//            System.out.println("other.zHashCode = " + other.getZHashCode());
-//            if(getZHashCode() == 0){
-//                draw();
-//
-//            }
             return hashCode() == other.hashCode();
-//            return getZHashCode() == other.getZHashCode();
-//            for (int i = 0; i < state.length; i++) {
-//                for (int j = 0; j < state[i].length; j++) {
-//                    if (state[i][j] != other.state[i][j]) {
-////                        return false;
-//                        flag = false;
-//                    }
-//                }
-//            }
-//            return true;
-//            draw();
-//            other.draw();
-//            System.out.println("flag = " + flag);
-//            return flag;
         }
-
         return false;
     }
 }
