@@ -211,13 +211,30 @@ public class Position extends State {
                     if (piece != 0) { // 0±íÊ¾¿Õ¸ñ
 //                        System.out.println("piece = " + piece);
 //                        System.out.println(zobristTable.length);
-                        hash ^= zobristTable[piece][i * getSize() + j];
+                        hash ^= (zobristTable[piece][i * getSize() + j]);
                     }
                 }
             }
             zHashCode = hash;
         }
         return zHashCode;
+    }
+
+    private int disjointPatternHashCode = 0;
+    public int getDisjointPatternHashCode() {
+        if(disjointPatternHashCode == 0) {
+            int hash = 0;
+            for (int i = 0; i < getSize(); i++) {
+                for (int j = 0; j < getSize(); j++) {
+                    int piece = state[i][j];
+                    if (piece != 0 && piece != 16) {
+                        hash ^= (zobristTable[piece][i * getSize() + j]);
+                    }
+                }
+            }
+            disjointPatternHashCode = hash;
+        }
+        return disjointPatternHashCode;
     }
 
     @Override

@@ -16,11 +16,11 @@ import java.util.Scanner;
 import static core.solver.algorithm.heuristic.HeuristicType.*;
 
 /**
- * å¯¹å­¦ç”Ÿçš„æœç´¢ç®—æ³•è¿›è¡Œæ£€æµ‹çš„ä¸»ç¨‹åº
- * arg0: é—®é¢˜è¾“å…¥æ ·ä¾‹      resources/pathfinding.txt
- * arg1: é—®é¢˜ç±»å‹         PATHFINDING
- * arg2: é¡¹ç›®çš„å“ªä¸ªé˜¶æ®µ    1
- * arg3: å„å°ç»„çš„Feeder   stud.runner.WalkerFeeder
+ * ¶ÔÑ§ÉúµÄËÑË÷Ëã·¨½øĞĞ¼ì²âµÄÖ÷³ÌĞò
+ * arg0: ÎÊÌâÊäÈëÑùÀı      resources/pathfinding.txt
+ * arg1: ÎÊÌâÀàĞÍ         PATHFINDING
+ * arg2: ÏîÄ¿µÄÄÄ¸ö½×¶Î    1
+ * arg3: ¸÷Ğ¡×éµÄFeeder   stud.runner.WalkerFeeder
  */
 public final class SearchTester {
 
@@ -28,9 +28,9 @@ public final class SearchTester {
             NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException, FileNotFoundException {
         
-        // åˆ›å»ºæ–‡ä»¶
+        // ´´½¨ÎÄ¼ş
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"))) {
-            writer.write("å®éªŒæ•°æ®ï¼š");
+            writer.write("ÊµÑéÊı¾İ£º");
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,58 +42,57 @@ public final class SearchTester {
 //            e.printStackTrace();
 //        }
 
-        //æ ¹æ®args[3]æä¾›çš„ç±»åç”Ÿæˆå­¦ç”Ÿçš„EngineFeederå¯¹è±¡
+        //¸ù¾İargs[3]Ìá¹©µÄÀàÃûÉú³ÉÑ§ÉúµÄEngineFeeder¶ÔÏó
         EngineFeeder feeder = (EngineFeeder)
                 Class.forName(args[3])
                         .getDeclaredConstructor().newInstance();
 
-    ////ä»æ–‡ä»¶è¯»å…¥æ‰€æœ‰è¾“å…¥æ ·ä¾‹çš„æ–‡æœ¬ï¼› args[0]ï¼šè¾“å…¥æ ·ä¾‹æ–‡ä»¶çš„ç›¸å¯¹è·¯å¾„
+    ////´ÓÎÄ¼ş¶ÁÈëËùÓĞÊäÈëÑùÀıµÄÎÄ±¾£» args[0]£ºÊäÈëÑùÀıÎÄ¼şµÄÏà¶ÔÂ·¾¶
         Scanner scanner = new Scanner(new File(args[0]));
         ArrayList<String> problemLines = getProblemLines(scanner);
 
-        //feederä»è¾“å…¥æ ·ä¾‹æ–‡æœ¬è·å–å¯»è·¯é—®é¢˜çš„æ‰€æœ‰å®ä¾‹
+        //feeder´ÓÊäÈëÑùÀıÎÄ±¾»ñÈ¡Ñ°Â·ÎÊÌâµÄËùÓĞÊµÀı
         ArrayList<Problem> problems = feeder.getProblems(problemLines);
-    ////é—®é¢˜å®ä¾‹è¯»å…¥åˆ°ArrayListä¸­
+    ////ÎÊÌâÊµÀı¶ÁÈëµ½ArrayListÖĞ
 
-        //å½“å‰é—®é¢˜çš„ç±»å‹ args[1]    å¯»è·¯é—®é¢˜ï¼Œæ•°å­—æ¨ç›˜ï¼Œé‡äººä¼ æ•™å£«è¿‡æ²³ç­‰
+        //µ±Ç°ÎÊÌâµÄÀàĞÍ args[1]    Ñ°Â·ÎÊÌâ£¬Êı×ÖÍÆÅÌ£¬Ò°ÈË´«½ÌÊ¿¹ıºÓµÈ
         ProblemType type = ProblemType.valueOf(args[1]);
-        //ä»»åŠ¡ç¬¬å‡ é˜¶æ®µ args[2]
+        //ÈÎÎñµÚ¼¸½×¶Î args[2]
         int step = Integer.parseInt(args[2]);
 
-        //æ ¹æ®é—®é¢˜ç±»å‹å’Œå½“å‰é˜¶æ®µï¼Œè·å–æ‰€æœ‰å¯å‘å‡½æ•°çš„ç±»å‹
-        //å¯»è·¯é—®é¢˜åˆ†åˆ«ä½¿ç”¨Gridè·ç¦»å’ŒEuclidè·ç¦»ä½œä¸ºå¯å‘å‡½æ•°
+        //¸ù¾İÎÊÌâÀàĞÍºÍµ±Ç°½×¶Î£¬»ñÈ¡ËùÓĞÆô·¢º¯ÊıµÄÀàĞÍ
+        //Ñ°Â·ÎÊÌâ·Ö±ğÊ¹ÓÃGrid¾àÀëºÍEuclid¾àÀë×÷ÎªÆô·¢º¯Êı
         ArrayList<HeuristicType> heuristics = getHeuristicTypes(type, step);
 
         for (HeuristicType heuristicType : heuristics) { 
-            //solveProblemsæ–¹æ³•æ ¹æ®ä¸åŒå¯å‘å‡½æ•°ç”Ÿæˆä¸åŒçš„searcher
-            //ä»Feederè·å–æ‰€ä½¿ç”¨çš„æœç´¢å¼•æ“ï¼ˆAStarï¼ŒIDAStarç­‰ï¼‰ï¼Œ     
+            //solveProblems·½·¨¸ù¾İ²»Í¬Æô·¢º¯ÊıÉú³É²»Í¬µÄsearcher
+            //´ÓFeeder»ñÈ¡ËùÊ¹ÓÃµÄËÑË÷ÒıÇæ£¨AStar£¬IDAStarµÈ£©£¬     
             solveProblems(problems, feeder.getIdaStar(heuristicType), heuristicType);
             System.out.println();
         }
     }
 
     /**
-     * æ ¹æ®é—®é¢˜ç±»å‹å’Œå½“å‰é˜¶æ®µï¼Œè·å–æ‰€æœ‰å¯å‘å‡½æ•°çš„ç±»å‹
+     * ¸ù¾İÎÊÌâÀàĞÍºÍµ±Ç°½×¶Î£¬»ñÈ¡ËùÓĞÆô·¢º¯ÊıµÄÀàĞÍ
      * @param type
      * @param step
      * @return
      */
     private static ArrayList<HeuristicType> getHeuristicTypes(ProblemType type, int step) {
-        //æ±‚è§£å½“å‰é—®é¢˜åœ¨å½“å‰é˜¶æ®µå¯ç”¨çš„å¯å‘å‡½æ•°ç±»å‹åˆ—è¡¨
+        //Çó½âµ±Ç°ÎÊÌâÔÚµ±Ç°½×¶Î¿ÉÓÃµÄÆô·¢º¯ÊıÀàĞÍÁĞ±í
         ArrayList<HeuristicType> heuristics = new ArrayList<>();
-        //æ ¹æ®ä¸åŒçš„é—®é¢˜ç±»å‹ï¼Œè¿›è¡Œä¸åŒçš„æµ‹è¯•
+        //¸ù¾İ²»Í¬µÄÎÊÌâÀàĞÍ£¬½øĞĞ²»Í¬µÄ²âÊÔ
         if (type == ProblemType.PATHFINDING) {
             heuristics.add(PF_GRID);
             heuristics.add(PF_EUCLID);
         }
         else {
-            //NPuzzleé—®é¢˜çš„ç¬¬ä¸€é˜¶æ®µï¼Œä½¿ç”¨ä¸åœ¨ä½å°†ç‰Œå’Œæ›¼å“ˆé¡¿è·ç¦»
+            //NPuzzleÎÊÌâµÄµÚÒ»½×¶Î£¬Ê¹ÓÃ²»ÔÚÎ»½«ÅÆºÍÂü¹ş¶Ù¾àÀë
             if (step == 1) {
                 heuristics.add(MANHATTAN);
-//                heuristics.add(MISPLACED);
-
+                heuristics.add(MISPLACED);
             }
-            //NPuzzleé—®é¢˜çš„ç¬¬ä¸‰é˜¶æ®µï¼Œä½¿ç”¨Disjoint Pattern
+            //NPuzzleÎÊÌâµÄµÚÈı½×¶Î£¬Ê¹ÓÃDisjoint Pattern
             else if (step == 3){
                 heuristics.add(DISJOINT_PATTERN);
             }
@@ -102,52 +101,52 @@ public final class SearchTester {
     }
 
     /**
-     * ä½¿ç”¨ç»™å®šçš„searcherï¼Œæ±‚è§£é—®é¢˜é›†åˆä¸­çš„æ‰€æœ‰é—®é¢˜ï¼ŒåŒæ—¶ä½¿ç”¨è§£æ£€æµ‹å™¨å¯¹æ±‚å¾—çš„è§£è¿›è¡Œæ£€æµ‹
-     * @param problems     é—®é¢˜é›†åˆ
+     * Ê¹ÓÃ¸ø¶¨µÄsearcher£¬Çó½âÎÊÌâ¼¯ºÏÖĞµÄËùÓĞÎÊÌâ£¬Í¬Ê±Ê¹ÓÃ½â¼ì²âÆ÷¶ÔÇóµÃµÄ½â½øĞĞ¼ì²â
+     * @param problems     ÎÊÌâ¼¯ºÏ
      * @param searcher     searcher
-     * @param heuristicType ä½¿ç”¨å“ªç§å¯å‘å‡½æ•°ï¼Ÿ
+     * @param heuristicType Ê¹ÓÃÄÄÖÖÆô·¢º¯Êı£¿
      */
     private static void solveProblems(ArrayList<Problem> problems, AbstractSearcher searcher, HeuristicType heuristicType) {
         for (Problem problem : problems) {
-            // ä½¿ç”¨AStarå¼•æ“æ±‚è§£é—®é¢˜
+            // Ê¹ÓÃAStarÒıÇæÇó½âÎÊÌâ
             StopwatchCPU timer1 = new StopwatchCPU();
             Deque<Node> path = searcher.search(problem);
             long time1 = timer1.elapsedTime();
             
-            // è·å–Javaè¿è¡Œæ—¶ç¯å¢ƒ
+            // »ñÈ¡JavaÔËĞĞÊ±»·¾³
             Runtime runtime = Runtime.getRuntime();
-            // è·å–ç¨‹åºè¿è¡Œå‰çš„å†…å­˜ä½¿ç”¨æƒ…å†µ
+            // »ñÈ¡³ÌĞòÔËĞĞÇ°µÄÄÚ´æÊ¹ÓÃÇé¿ö
             long beforeUsedMem = runtime.totalMemory() - runtime.freeMemory();
             
             if (path == null) {
-                System.out.println("No Solution" + "ï¼Œæ‰§è¡Œäº†" + time1 + "sï¼Œ"+
-                        "å…±ç”Ÿæˆäº†" + searcher.nodesGenerated() + "ä¸ªç»“ç‚¹ï¼Œ" +
-                        "æ‰©å±•äº†" + searcher.nodesExpanded() + "ä¸ªç»“ç‚¹");
+                System.out.println("No Solution" + "£¬Ö´ĞĞÁË" + time1 + "ns£¬"+
+                        "¹²Éú³ÉÁË" + searcher.nodesGenerated() + "¸ö½áµã£¬" +
+                        "À©Õ¹ÁË" + searcher.nodesExpanded() + "¸ö½áµã");
                 continue;
             }
 
-            // è§£è·¯å¾„çš„å¯è§†åŒ–
+            // ½âÂ·¾¶µÄ¿ÉÊÓ»¯
             problem.showSolution(path);
 
-            System.out.println("å¯å‘å‡½æ•°ï¼š" + heuristicType + "ï¼Œè§£è·¯å¾„é•¿åº¦ï¼š" + path.size() + "ï¼Œæ‰§è¡Œäº†" + time1 + "sï¼Œ" +
-                    "å…±ç”Ÿæˆäº†" + searcher.nodesGenerated() + "ä¸ªç»“ç‚¹ï¼Œ" +
-                    "æ‰©å±•äº†" + searcher.nodesExpanded() + "ä¸ªç»“ç‚¹");
+            System.out.println("Æô·¢º¯Êı£º" + heuristicType + "£¬½âÂ·¾¶³¤¶È£º" + path.size() + "£¬Ö´ĞĞÁË" + time1 + "ns£¬" +
+                    "¹²Éú³ÉÁË" + searcher.nodesGenerated() + "¸ö½áµã£¬" +
+                    "À©Õ¹ÁË" + searcher.nodesExpanded() + "¸ö½áµã");
             
-             // è·å–ç¨‹åºè¿è¡Œåçš„å†…å­˜ä½¿ç”¨æƒ…å†µ
+             // »ñÈ¡³ÌĞòÔËĞĞºóµÄÄÚ´æÊ¹ÓÃÇé¿ö
             long afterUsedMem = runtime.totalMemory() - runtime.freeMemory();
-            // è®¡ç®—å†…å­˜ä½¿ç”¨å¢é‡
+            // ¼ÆËãÄÚ´æÊ¹ÓÃÔöÁ¿
             long actualMemUsed = afterUsedMem - beforeUsedMem;
-            System.out.println("ç¨‹åºè¿è¡Œå‰å†…å­˜ä½¿ç”¨é‡ï¼ˆå­—èŠ‚ï¼‰: " + beforeUsedMem +"ï¼Œç¨‹åºè¿è¡Œåå†…å­˜ä½¿ç”¨é‡ï¼ˆå­—èŠ‚ï¼‰: " +
-                    afterUsedMem + "ï¼Œç¨‹åºè¿è¡Œå†…å­˜ä½¿ç”¨å¢é‡ï¼ˆå­—èŠ‚ï¼‰: " + actualMemUsed);
+            System.out.println("³ÌĞòÔËĞĞÇ°ÄÚ´æÊ¹ÓÃÁ¿£¨×Ö½Ú£©: " + beforeUsedMem +"£¬³ÌĞòÔËĞĞºóÄÚ´æÊ¹ÓÃÁ¿£¨×Ö½Ú£©: " +
+                    afterUsedMem + "£¬³ÌĞòÔËĞĞÄÚ´æÊ¹ÓÃÔöÁ¿£¨×Ö½Ú£©: " + actualMemUsed);
 
-            // è¾“å‡ºåˆ°æ–‡ä»¶ä¸­
+            // Êä³öµ½ÎÄ¼şÖĞ
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt", true))) {
-                writer.write("å¯å‘å‡½æ•°ï¼š" + heuristicType + "ï¼Œè§£è·¯å¾„é•¿åº¦ï¼š" + path.size() + "ï¼Œæ‰§è¡Œäº†" + time1 + "sï¼Œ" +
-                        "å…±ç”Ÿæˆäº†" + searcher.nodesGenerated() + "ä¸ªç»“ç‚¹ï¼Œ" +
-                        "æ‰©å±•äº†" + searcher.nodesExpanded() + "ä¸ªç»“ç‚¹");
+                writer.write("Æô·¢º¯Êı£º" + heuristicType + "£¬½âÂ·¾¶³¤¶È£º" + path.size() + "£¬Ö´ĞĞÁË" + time1 + "ns£¬" +
+                        "¹²Éú³ÉÁË" + searcher.nodesGenerated() + "¸ö½áµã£¬" +
+                        "À©Õ¹ÁË" + searcher.nodesExpanded() + "¸ö½áµã");
                 writer.newLine();
-                writer.write("ç¨‹åºè¿è¡Œå‰å†…å­˜ä½¿ç”¨é‡ï¼ˆå­—èŠ‚ï¼‰: " + beforeUsedMem +"ï¼Œç¨‹åºè¿è¡Œåå†…å­˜ä½¿ç”¨é‡ï¼ˆå­—èŠ‚ï¼‰: " +
-                        afterUsedMem + "ï¼Œç¨‹åºè¿è¡Œå†…å­˜ä½¿ç”¨å¢é‡ï¼ˆå­—èŠ‚ï¼‰: " + actualMemUsed);
+                writer.write("³ÌĞòÔËĞĞÇ°ÄÚ´æÊ¹ÓÃÁ¿£¨×Ö½Ú£©: " + beforeUsedMem +"£¬³ÌĞòÔËĞĞºóÄÚ´æÊ¹ÓÃÁ¿£¨×Ö½Ú£©: " +
+                        afterUsedMem + "£¬³ÌĞòÔËĞĞÄÚ´æÊ¹ÓÃÔöÁ¿£¨×Ö½Ú£©: " + actualMemUsed);
                 writer.newLine();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -156,7 +155,7 @@ public final class SearchTester {
     }
 
     /**
-     * ä»æ–‡ä»¶è¯»å…¥é—®é¢˜å®ä¾‹çš„å­—ç¬¦ä¸²ï¼Œæ”¾å…¥å­—ç¬¦ä¸²æ•°ç»„é‡Œ
+     * ´ÓÎÄ¼ş¶ÁÈëÎÊÌâÊµÀıµÄ×Ö·û´®£¬·ÅÈë×Ö·û´®Êı×éÀï
      * @param scanner
      * @return
      */
